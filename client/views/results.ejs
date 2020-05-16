@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ./partials/head.ejs %>
+  <body>
+    <header>
+      <h1>Wikipedia European Countries Game</h1>
+      <h2>
+        <a href="/" class="back-link"><button>Go back</button></a>
+        Results
+      </h2>
+    </header>
+    <main>
+      <section>
+        <table>
+          <thead>
+            <th></th>
+            <th>Country</th>
+            <th>Avg. clicks</th>
+            <th>Times played</th>
+          </thead>
+          <tbody>
+            <% results.forEach((result, index) => { %>
+            <tr class="result-row">
+              <td><%= index + 1 %></td>
+              <td><%= result.country %></td>
+              <td><%= result.averageAmountOfClicks %></td>
+              <td><%= result.timesPlayed %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>created by <a href="https://lenn4rt.com/">lenn4RT</a></footer>
+  </body>
+</html>
