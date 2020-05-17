@@ -1,86 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <% include ./partials/head.ejs %>
-  <body>
-    <header>
-      <h1>CORDUROY RIBble</h1>
-    </header>
-    <main>
-      <section id="introduction-section">
-        <form action="/new" method="GET" id="form-new-game">
-          <fieldset>
-            <legend>Start a new game</legend>
-            <label for="user">Your name:</label>
-            <input
-              type="text"
-              id="user-name"
-              placeholder="your name"
-              name="user"
-            />
-            <label for="room">Room name:</label>
-            <input
-              type="text"
-              id="room-name"
-              placeholder="room name"
-              name="room"
-            />
-            <label for="rounds">Rounds:</label>
-            <select name="rounds" id="rounds">
-              <option value="2">2</option>
-              <option value="3" selected>3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-            <label for="time">draw time (in seconds):</label>
-            <select name="time" id="time">
-              <% for( let index = 0; index < 16; index++ ) { %>
-              <option 
-              value="<%=  30 + index * 10 %>" 
-                <% if (30 + index * 10 === 80) { %>
-              selected
-              <% } %>>
-                <%= 30 + index * 10 %>
-              </option>
-              <% } %>
-            </select>
 
-            <input type="submit" value="let's go!" />
-          </fieldset>
-        </form>
-        <form action="/join" method="GET" id="form-join-game" <% if (rooms.length < 1) { %> class="hidden" <% } %>>
-          <fieldset>
-            <legend>Join an existing game</legend>
-            <input
-              type="text"
-              id="user-name"
-              placeholder="your name"
-              name="user"
-            />
-            <select name="room" id="select-room">
-              <% rooms.forEach(room => { %>
-              <option value="<%= room.roomName %>"
-                ><%= room.roomName %> (<%= room.userTotal %> player)</option
-              >
-              <% }) %>
-            </select>
-            <input type="submit" value="let's go!" />
-          </fieldset>
-        </form>
-      </section>
-      <section id="introduction-results-section">
-        <p>
-          Check out the leaderboard!
-        </p>
-        <a href="/results"><button>leaderboard</button></a>
-      </section>
-    </main>
-    <footer>created by <a href="https://lenn4rt.com/">lenn4RT</a></footer>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/javascripts/index.js"></script>
-  </body>
+<% include ./partials/head.ejs %>
+
+<body>
+  <header>
+    <h1>Ribble</h1>
+  </header>
+  <main>
+    <section id="introduction-section">
+      <article id="introduction-article">
+        <% include ./partials/introduction/new-game-form.ejs %>
+        <% include ./partials/introduction/join-game-form.ejs %>
+      </article>
+      <article id="introduction-results-article">
+        <% include ./partials/introduction/leaderboard-link-box.ejs %>
+      </article>
+    </section>
+
+    <section id="waiting-room-section" class="hidden">
+      <% include ./partials/waiting-room/waiting-room.ejs %>
+    </section>
+
+    <section id="game-room-section">
+      <% include ./partials/game-room/game-room.ejs %>
+    </section>
+
+
+  </main>
+  <footer>created by <a href="https://lenn4rt.com/">lenn4RT</a></footer>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/javascripts/index.js"></script>
+</body>
+
 </html>

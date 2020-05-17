@@ -1,57 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-  <% include ./partials/head.ejs %>
-  <body>
-    <header>
-      <h1>Wikipedia European Countries Game</h1>
-      <h2><%= room %> | <span id="username"><%= user %></span></h2>
-    </header>
-    <main>
-      <!-- PRE-GAME INFO -->
-      <section id="pre-game-section">
-        <article id="other-players">
-          <h3>Other players</h3>
-          <ul id="user-list">
-            <li></li>
-          </ul>
-        </article>
+<% include ./partials/head.ejs %>
 
-        <div class="buttons-container">
-          <button id="ready-button" class="ready-button" data-ready="false">
-            Click here when you're ready
-          </button>
-          <button
-            id="start-button"
-            class="start-button inactive"
-            data-ready="false"
-          >
-            Start game
-          </button>
-        </div>
-      </section>
-      <section id="game-section" class="hidden">
-        
-      </section>
-      <section id="post-game-section" class="hidden">
-        <article>
-          <h3 id="winner-text">Winners</h3>
-          <!-- <ol id="winners-list"></ol>
+<body>
+  <header>
+    <h1>Wikipedia European Countries Game</h1>
+    <h2><%= room %> | <span id="username"><%= user %></span></h2>
+  </header>
+  <main>
+    <!-- PRE-GAME INFO -->
+    <section id="waiting-room-section">
+      <article id="other-players">
+        <h3>Other players</h3>
+        <ul id="user-list">
+          <li></li>
+        </ul>
+      </article>
+
+      <div class="buttons-container">
+        <button id="ready-button" class="ready-button" data-ready="false">
+          Click here when you're ready
+        </button>
+        <button id="start-button" class="start-button inactive" data-ready="false">
+          Start game
+        </button>
+      </div>
+    </section>
+    <section id="game-section" class="hidden">
+
+    </section>
+    <section id="post-game-section" class="hidden">
+      <article>
+        <h3 id="winner-text">Winners</h3>
+        <!-- <ol id="winners-list"></ol>
           <h3>Losers</h3>
           <ol id="losers-list"></ol> -->
-          <button id="start-over-button" class="start-over-button">
-            start over
+        <button id="start-over-button" class="start-over-button">
+          start over
+        </button>
+        <a id="results-link" href="results">
+          <button id="results-button" class="results-button">
+            view results for all countries
           </button>
-          <a id="results-link" href="results">
-            <button id="results-button" class="results-button">
-              view results for all countries
-            </button>
-          </a>
-        </article>
-      </section>
-    </main>
-    <footer>created by <a href="https://lenn4rt.com/">lenn4RT</a></footer>
+        </a>
+      </article>
+    </section>
+  </main>
+  <footer>created by <a href="https://lenn4rt.com/">lenn4RT</a></footer>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="javascripts/room.js"></script>
-  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="javascripts/room.js"></script>
+</body>
+
 </html>

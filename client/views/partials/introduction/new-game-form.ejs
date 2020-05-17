@@ -1,0 +1,31 @@
+<form action="/new" method="GET" id="form-new-game">
+  <fieldset>
+    <legend>Start a new game</legend>
+    <label for="user">Your name:</label>
+    <input type="text" id="user-name" placeholder="your name" name="user" />
+    <label for="room">Room name:</label>
+    <input type="text" id="room-name" placeholder="room name" name="room" />
+    <label for="rounds">Rounds:</label>
+    <select name="rounds" id="rounds">
+      <option value="2">2</option>
+      <option value="3" selected>3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+    </select>
+    <label for="time">draw time (in seconds):</label>
+    <select name="time" id="time">
+      <% for( let index = 0; index < 16; index++ ) { %>
+      <option value="<%=  30 + index * 10 %>" <% if (30 + index * 10 === 80) { %> selected <% } %>>
+        <%= 30 + index * 10 %>
+      </option>
+      <% } %>
+    </select>
+
+    <input type="submit" value="let's go!" />
+  </fieldset>
+</form>

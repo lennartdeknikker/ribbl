@@ -11,7 +11,7 @@ router.get('/', function(req, res) {
             if (Math.floor(score.averageAmountOfClicks) !== score.averageAmountOfClicks)
                 score.averageAmountOfClicks = (Math.round(score.averageAmountOfClicks * 100) / 100).toFixed(2)
         })
-        res.render('results', { title: 'wiki-game | results', results: scores})
+        res.render('results', { title: 'results', results: scores})
     }
 })
 

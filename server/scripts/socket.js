@@ -8,26 +8,49 @@ function socket(io) {
         socket.emit('change in open rooms', availableRooms)
         console.log('a user connected')
 
-        socket.on('join', async function(roomName, userName) {
-            console.log('user joined')            
-            let isCreator = false
-            if (!io.sockets.adapter.rooms[roomName]) {
-                const newRoom = await Utilities.createRoom(roomName)
-                availableRooms.push(newRoom)
-                isCreator = true
-            }
+        socket.on('join room', async function(formValues) {   
+            const userName = formValues.user
+            const roomName = formValues.room
 
-            const newUser = await Utilities.createUser(userName, socket.id, isCreator)
             const roomIndex = availableRooms.findIndex(room => room.roomName === roomName)
+            const newUser = await Utilities.createUser(userName, socket.id, false)
+
             availableRooms[roomIndex].users.push(newUser)
-            availableRooms[roomIndex].userTotal++
+            availableRooms[roomIndex].userTotal++ 
 
             socket.join(roomName)
+
+            socket.emit('room joined')            
             io.to(roomName).emit('change in users', Utilities.getRoomData(roomName, availableRooms))
             io.emit('change in open rooms', availableRooms)
 
             console.log(userName, 'joined', roomName)
-            console.log('room details', io.sockets.adapter.rooms[roomName])    
+            console.log('room details', io.sockets.adapter.rooms[roomName])   
+        })
+
+        socket.on('create new room', async (formValues) => {
+            const roomName = formValues.room
+            const rounds = formValues.rounds
+            const drawTime = formValues.time
+            const userName = formValues.user
+
+            if (!io.sockets.adapter.rooms[roomName]) {
+                // add a new room
+                const newRoom = await Utilities.createRoom(roomName, rounds, drawTime)
+                availableRooms.push(newRoom)
+                // push the new user as admin.
+                const newUser = await Utilities.createUser(userName, socket.id, true)
+                const roomIndex = availableRooms.findIndex(room => room.roomName === roomName)
+                availableRooms[roomIndex].users.push(newUser)
+                availableRooms[roomIndex].userTotal++
+                // add room to dropdown in the join game form.
+                
+                socket.join(roomName)
+                
+                io.emit('change in open rooms', availableRooms)
+                console.log(`a new room has been created: ${roomName}`)     
+                socket.emit('room creation successfull', true)           
+            } else socket.emit('room creation successfull', false)
         })
 
         socket.on('disconnect', function() {
@@ -48,15 +71,15 @@ function socket(io) {
                         if (room.userTotal < 1) {
                             const index = availableRooms.indexOf(room)
                             availableRooms.splice(index, 1)
-                            io.emit('change in open rooms', availableRooms)
                         }
                     }
                 })
             })
+            io.emit('change in open rooms', availableRooms)
         })
 
         socket.on('ready', (ready) => {
-            console.log('ready')            
+            console.log('ready')
             Utilities.setUserProperty(socket.id, availableRooms, 'ready', ready, io)            
         })
 
@@ -67,6 +90,12 @@ function socket(io) {
             
             io.to(room.roomName).emit('game started', room)            
             io.emit('change in open rooms', availableRooms)
+        })
+
+        socket.on('new message', (message) => {
+            const room = Utilities.getRoomByUserId(socket.id, availableRooms)
+            const thisUser = Utilities.getUserById(socket.id, room)
+            io.to(room.roomName).emit('new message received', thisUser.username, message)
         })
     })
 }

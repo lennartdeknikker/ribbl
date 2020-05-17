@@ -1,0 +1,12 @@
+<form action="/join" method="GET" id="form-join-game" <% if (rooms.length < 1) { %> class="hidden" <% } %>>
+  <fieldset>
+    <legend>Join an existing game</legend>
+    <input type="text" id="user-name" placeholder="your name" name="user" />
+    <select name="room" id="select-room">
+      <% rooms.forEach(room => { %>
+      <option value="<%= room.roomName %>"><%= room.roomName %> (<%= room.userTotal %> player)</option>
+      <% }) %>
+    </select>
+    <input type="submit" value="let's go!" />
+  </fieldset>
+</form>

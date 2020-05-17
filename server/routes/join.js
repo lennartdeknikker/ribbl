@@ -12,7 +12,7 @@ router.get('/', async function(req, res) {
     if (room && room.status !== 'waiting for players') {
         res.render('error', { title: 'wiki-game', error: 'Sorry, you can\'t enter this room right now. They already started playing. '})
     } else {
-        res.render('room', { title: `wiki-game | ${roomName}`, room: roomName, user: userName})
+        res.render('room', { title: roomName, room: roomName, user: userName})
     }
 })
 

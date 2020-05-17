@@ -8,15 +8,15 @@ const Utilities = {
             ready: false
         }
     },
-    async createRoom(roomName) {
+    async createRoom(roomName, rounds, drawTime) {        
         let newRoom = {
             roomName: roomName,
             userTotal: 0,
             users: [],
             playedWords: [],
             messages: [],
-            rounds: 3,
-            drawTime: 80,
+            rounds: rounds,
+            drawTime: drawTime,
             status: 'waiting for players',
             winner: {}
         }
@@ -36,6 +36,15 @@ const Utilities = {
             })
         })
         return result
+    },    
+    getUserById(socketID, room) {
+        let foundUser = []
+        room.users.forEach(user => {
+            if (user.id === socketID) {
+                foundUser = user
+            }
+        })
+        return foundUser
     },
     setUserProperty(id, roomsFile, property, newValue, io) {
         let newRoomdata = []

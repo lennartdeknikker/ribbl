@@ -272,14 +272,14 @@ footer a:visited {
   color: white;
 }
 
-#introduction-section {
+#introduction-article {
   margin: 1rem;
   box-sizing: border-box;
   padding: 2rem;
   color: var(--header-color);
 }
 
-#introduction-results-section {
+#introduction-results-article {
   margin: 1rem;
   box-sizing: border-box;
   padding: 2rem;

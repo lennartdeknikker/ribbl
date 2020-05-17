@@ -18,7 +18,7 @@ router.get('/', async function(req, res) {
     })
     
     // render the index page.
-    res.render('index', { title: 'wiki-game', rooms: availableRooms })
+    res.render('index', { title: '', rooms: availableRooms })
 })
 
 module.exports = router
