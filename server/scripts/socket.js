@@ -68,7 +68,7 @@ function socket(io) {
                         // tell clients the users file changed          
                         io.to(room.roomName).emit('change in users', Utilities.getRoomData(room.roomName, availableRooms))
                         // delete room if empty
-                        if (room.userTotal < 1) {
+                        if (room.userTotal < 2) {
                             const index = availableRooms.indexOf(room)
                             availableRooms.splice(index, 1)
                         }

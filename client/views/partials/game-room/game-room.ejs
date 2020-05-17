@@ -2,6 +2,7 @@
   <h3>Round <span id="round">./.</span></h3>
   <h3>Time: <span id="draw-time">.. S</span></h3>
 </header>
+
 <article id="scores-article">
   <h3>Scores</h3>
   <button id="toggle-scores-button">V</button>
@@ -9,14 +10,16 @@
     <li>Lennart: <span class="score">...</span> points</li>
   </ol>
 </article>
-<article id="drawing-article">
 
+<article id="drawing-article">
+  <h3>Drawing</h3>
+  <canvas id="drawing-board">
+  </canvas>
 </article>
+
 <article id="chat-article">
   <h3>Chat</h3>
-  <ul id="messages-list">
-
-  </ul>
+  <ul id="messages-list"></ul>
   <form action="#" id="form-chat">
     <label for="message">Guess: </label>
     <input type="text" id="chat-input" name="message">
