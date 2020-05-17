@@ -12,6 +12,9 @@ const messagesList = document.getElementById('messages-list')
 const scoresList = document.getElementById('scores-list')
 const scoresButton = document.getElementById('toggle-scores-button')
 const roundsText = document.getElementById('rounds')
+const wordPickerArticle = document.getElementById('word-picker-article')
+const wordButtonsContainer = document.getElementById('word-buttons-container')
+const drawTimeTextElement = document.getElementById('draw-time')
 
 // EVENT LISTENERS
 readyButton.addEventListener('click', readyButtonHandler)
@@ -63,8 +66,12 @@ function handleForm() {
         const formValues = extractFormValues(event.target)
         socket.emit('new message', formValues.message)
         chatInput.value = ''
-    }
-    
+    }    
+}
+
+function pickWordHandler() {
+    socket.emit('word picked', this.innerText)
+    wordPickerArticle.classList.add('hidden')
 }
 
 //SOCKET EVENTS
@@ -133,6 +140,20 @@ socket.on('scores changed', users => {
 
 socket.on('rounds changed', (currentRound, totalRounds) => {
     updateRounds(currentRound, totalRounds)
+})
+
+socket.on('your turn starts now', (words) => {
+    wordButtonsContainer.innerHTML = ''
+    for (let word of words) {
+        const newButton = document.createElement('button')
+        newButton.innerText = word
+        wordButtonsContainer.appendChild(newButton)
+        newButton.addEventListener('click', pickWordHandler)
+    }
+})
+
+socket.on('a second passed', time => {
+    drawTimeTextElement.innerText = time
 })
 
 // DOM UPDATES

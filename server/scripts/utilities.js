@@ -1,3 +1,5 @@
+const Words = require('./words.json')
+
 const Utilities = {
     createUser(username, id, isAdmin) {
         return {
@@ -5,7 +7,8 @@ const Utilities = {
             id: id,
             score: 0,
             admin: isAdmin,
-            ready: false
+            ready: false,
+            position: 0
         }
     },
     async createRoom(roomName, rounds, drawTime) {        
@@ -19,7 +22,11 @@ const Utilities = {
             currentRound: 1,
             drawTime: drawTime,
             status: 'waiting for players',
-            winner: {}
+            winner: {},
+            turn: 0,
+            currentWord: '',
+            timer: drawTime,
+            interval: {}
         }
         return newRoom
     },
@@ -46,6 +53,15 @@ const Utilities = {
             }
         })
         return foundUser
+    },    
+    getUserByPosition(position, room) {
+        let foundUser = []
+        room.users.forEach(user => {
+            if (user.position === position) {
+                foundUser = user
+            }
+        })
+        return foundUser
     },
     setUserProperty(id, roomsFile, property, newValue, io) {
         let newRoomdata = []
@@ -59,6 +75,14 @@ const Utilities = {
             })
         })
     },
+    getRandomWords(amount = 3) {
+        let words = []
+        for (let i = 0; i < amount; i++) {
+            const randomIndex = Math.floor(Math.random() * Words.words.length)
+            words.push(Words.words[randomIndex]) 
+        }
+        return words
+    }
 }
 
 module.exports = Utilities

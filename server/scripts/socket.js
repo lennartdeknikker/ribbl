@@ -87,13 +87,23 @@ function socket(io) {
             console.log('start game')            
             const room = Utilities.getRoomByUserId(socket.id, availableRooms)
             room.status = 'playing'
+
+            // give users positions so when someone leaves during play, noone plays double.
+            room.users.forEach(user => user.position = room.users.indexOf(user))
             
             io.to(room.roomName).emit('game started', room)          
-            io.to(room.roomName).emit('scores changed', room.users)          
+            io.to(room.roomName).emit('scores changed', room.users)
+            
+            const startingUser = room.users[room.turn]
+            const words = Utilities.getRandomWords()
+
+            io.to(startingUser.id).emit('your turn starts now', words)
+
             io.emit('change in open rooms', availableRooms)
         })
 
         socket.on('new message', (message) => {
+
             const room = Utilities.getRoomByUserId(socket.id, availableRooms)
             const thisUser = Utilities.getUserById(socket.id, room)
             io.to(room.roomName).emit('new message received', thisUser.username, message)
@@ -117,6 +127,20 @@ function socket(io) {
         socket.on('draw mousemove', (newX, newY) => {
             const room = Utilities.getRoomByUserId(socket.id, availableRooms)
             io.to(room.roomName).emit('drawing mousemove', newX, newY)     
+        })
+
+        socket.on('word picked', word => {
+            const room = Utilities.getRoomByUserId(socket.id, availableRooms)
+            room.currentWord = word
+            room.interval = setInterval(() => {
+                if (room.timer > 0) {
+                    io.to(room.roomName).emit('a second passed', room.timer)
+                    room.timer--
+                } else {
+                    io.to(room.roomName).emit('time is up')
+                    clearInterval(room.interval)
+                }
+            }, 1000)
         })
     })
 }
