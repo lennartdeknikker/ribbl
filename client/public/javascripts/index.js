@@ -270,27 +270,43 @@ ctx.lineJoin = 'round'
 ctx.lineCap = 'round'
 ctx.lineWidth = 15
 
-let isDrawing = false
-let lastX = 0
-let lastY = 0
+let drawVars = {
+    isDrawing: false,
+    type: 'none',
+    lastX: 0,
+    lastY: 0
+}
 
-function draw(e) {
-    if (!isDrawing) return
-    console.log(e)
+function draw(newX, newY) {    
+    if (!drawVars.isDrawing) return
     ctx.beginPath()
-    ctx.moveTo(lastX, lastY)
-    ctx.lineTo(e.offsetX, e.offsetY)
+    ctx.moveTo(drawVars.lastX, drawVars.lastY)
+    ctx.lineTo(newX, newY)
     ctx.stroke();
-    [lastX, lastY] = [e.offsetX, e.offsetY]
+    [drawVars.lastX, drawVars.lastY] = [newX, newY]
 }
 
 console.log(canvas)
 
-canvas.addEventListener('mousemove', draw)
+canvas.addEventListener('mouseup', () => socket.emit('draw mouseup'))
+canvas.addEventListener('mouseout', () => socket.emit('draw mouseout'))
 canvas.addEventListener('mousedown', (e) => {
-    isDrawing = true;
-    [lastX, lastY] = [e.offsetX, e.offsetY]
+    const newX = e.offsetX
+    const newY = e.offsetY
+    socket.emit('draw mousedown', newX, newY)
 })
-canvas.addEventListener('mouseup', () => isDrawing = false)
-canvas.addEventListener('mouseout', () => isDrawing = false)
+canvas.addEventListener('mousemove', event => {
+    const newX = event.offsetX
+    const newY = event.offsetY
+    socket.emit('draw mousemove', newX, newY)
+})
 
+socket.on('drawing mouseup', () => drawVars.isDrawing = false)
+socket.on('drawing mouseout', () => drawVars.isDrawing = false)
+socket.on('drawing mousedown', (newX, newY) => {
+    drawVars.isDrawing = true;
+    [drawVars.lastX, drawVars.lastY] = [newX, newY]
+})
+socket.on('drawing mousemove', (newX, newY) => {
+    draw(newX, newY)
+})

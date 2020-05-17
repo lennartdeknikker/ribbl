@@ -98,6 +98,26 @@ function socket(io) {
             const thisUser = Utilities.getUserById(socket.id, room)
             io.to(room.roomName).emit('new message received', thisUser.username, message)
         })
+
+        socket.on('draw mouseup', () => {
+            const room = Utilities.getRoomByUserId(socket.id, availableRooms)
+            io.to(room.roomName).emit('drawing mouseup')     
+        })
+
+        socket.on('draw mouseout', () => {
+            const room = Utilities.getRoomByUserId(socket.id, availableRooms)
+            io.to(room.roomName).emit('drawing mouseout')     
+        })
+
+        socket.on('draw mousedown', (newX, newY) => {
+            const room = Utilities.getRoomByUserId(socket.id, availableRooms)
+            io.to(room.roomName).emit('drawing mousedown', newX, newY)     
+        })
+
+        socket.on('draw mousemove', (newX, newY) => {
+            const room = Utilities.getRoomByUserId(socket.id, availableRooms)
+            io.to(room.roomName).emit('drawing mousemove', newX, newY)     
+        })
     })
 }
 
