@@ -327,3 +327,8 @@ select {
   width: 100%;
   box-sizing: border-box;
 }
+
+#game-section-header {
+  background-color: white;
+  border: 2px solid var(--header-color);
+}

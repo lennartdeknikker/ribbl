@@ -1,3 +1,6 @@
+// eslint-disable-next-line no-undef
+const socket = io()
+
 // HTML ELEMENTS
 const startButton = document.getElementById('start-button')
 const readyButton = document.getElementById('ready-button')
@@ -6,11 +9,14 @@ const otherPlayersArticle = document.getElementById('other-players-article')
 const noPlayersArticle = document.getElementById('no-players-article')
 const chatInput = document.getElementById('chat-input')
 const messagesList = document.getElementById('messages-list')
+const scoresList = document.getElementById('scores-list')
+const scoresButton = document.getElementById('toggle-scores-button')
+const roundsText = document.getElementById('rounds')
 
 // EVENT LISTENERS
 readyButton.addEventListener('click', readyButtonHandler)
 startButton.addEventListener('click', startButtonHandler)
-chatInput.addEventListener
+scoresButton.addEventListener('click', scoresButtonHandler)
 
 //EVENT HANDLERS
 function readyButtonHandler() {
@@ -29,11 +35,39 @@ function startButtonHandler() {
     }
 }
 
+function scoresButtonHandler() {
+    const scoresListItems = scoresList.querySelectorAll('li')
+    const showing = !scoresListItems[scoresListItems.length-1].classList.contains('hidden')
+    if (showing) {
+        for (let item of scoresListItems) {
+            item.classList.add('hidden')
+        }
+        scoresListItems[0].classList.remove('hidden')
+    } else {
+        for (let item of scoresListItems) {
+            item.classList.remove('hidden')
+        }
+    }
+}
+
+function handleForm() {
+    if (event.target.id === 'form-new-game') {
+        const formValues = extractFormValues(event.target)
+        socket.emit('create new room', formValues)
+    }
+    if (event.target.id === 'form-join-game') {
+        const formValues = extractFormValues(event.target)
+        socket.emit('join room', formValues)
+    }
+    if (event.target.id === 'form-chat') {
+        const formValues = extractFormValues(event.target)
+        socket.emit('new message', formValues.message)
+        chatInput.value = ''
+    }
+    
+}
+
 //SOCKET EVENTS
-
-// eslint-disable-next-line no-undef
-const socket = io()
-
 socket.on('connect', () => {
     console.log('connected')    
 })
@@ -93,7 +127,15 @@ socket.on('new message received', (user, message) => {
     messagesList.appendChild(newLi)
 })
 
-// HELPER FUNCTIONS
+socket.on('scores changed', users => {
+    updateScores(users)
+})
+
+socket.on('rounds changed', (currentRound, totalRounds) => {
+    updateRounds(currentRound, totalRounds)
+})
+
+// DOM UPDATES
 
 function updateRoomList(rooms) {
     const joinForm = document.getElementById('form-join-game')
@@ -135,6 +177,23 @@ function updateUserList(users) {
     }
 }
 
+function updateScores(users) {
+    scoresList.innerHTML = ''
+    users.sort((userA, userB) => {
+        return userB.score - userA.score
+    })
+    for (let user of users) {
+        let newLi = document.createElement('li')
+        newLi.innerText = `${user.username}: ${user.score}`
+        scoresList.appendChild(newLi)
+    }
+}
+
+function updateRounds(currentRound, totalRounds) {
+    roundsText.innerText = `${currentRound} / ${totalRounds}`
+}
+
+// HELPER FUNCTIONS
 function changeVisibleSectionTo(sectionName) {
     const sections = document.querySelectorAll('section')
     for (let section of sections) {
@@ -148,7 +207,15 @@ function makeVisible(element, visible) {
     visible ? element.classList.remove('hidden') : element.classList.add('hidden')
 }
 
-// checker functions
+function extractFormValues(form) {
+    const formValues = {}
+    for (let i = 0; i < form.length; i++) {
+        if (form[i].name) formValues[form[i].name] = form[i].value
+    }
+    return formValues
+}
+
+// CHECKER FUNCTIONS
 function isAdmin(users) {
     const admin = users.find(user => user.admin === true)    
     return admin.id === socket.id
@@ -189,30 +256,4 @@ function validate(form) {
         }
     }
     return allIsRight ? true : false
-}
-
-
-function handleForm() {
-    if (event.target.id === 'form-new-game') {
-        const formValues = extractFormValues(event.target)
-        socket.emit('create new room', formValues)
-    }
-    if (event.target.id === 'form-join-game') {
-        const formValues = extractFormValues(event.target)
-        socket.emit('join room', formValues)
-    }
-    if (event.target.id === 'form-chat') {
-        const formValues = extractFormValues(event.target)
-        socket.emit('new message', formValues.message)
-        chatInput.value = ''
-    }
-    
-}
-
-function extractFormValues(form) {
-    const formValues = {}
-    for (let i = 0; i < form.length; i++) {
-        if (form[i].name) formValues[form[i].name] = form[i].value
-    }
-    return formValues
 }

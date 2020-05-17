@@ -16,6 +16,7 @@ const Utilities = {
             playedWords: [],
             messages: [],
             rounds: rounds,
+            currentRound: 1,
             drawTime: drawTime,
             status: 'waiting for players',
             winner: {}

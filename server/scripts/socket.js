@@ -88,7 +88,8 @@ function socket(io) {
             const room = Utilities.getRoomByUserId(socket.id, availableRooms)
             room.status = 'playing'
             
-            io.to(room.roomName).emit('game started', room)            
+            io.to(room.roomName).emit('game started', room)          
+            io.to(room.roomName).emit('scores changed', room.users)          
             io.emit('change in open rooms', availableRooms)
         })
 
