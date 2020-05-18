@@ -18,7 +18,6 @@
 body {
   margin: 0;
   font-family: var(--font-family);
-  overflow: hidden;
   background: url('../images/background.png');
   background-size: 256px;
 }
