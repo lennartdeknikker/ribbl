@@ -26,12 +26,13 @@ function readyButtonHandler() {
     const ready = readyButton.dataset.ready === 'true'
 
     socket.emit('ready', !ready)
+    this.classList.contains('button-not-ready') ? this.classList.remove('button-not-ready') : this.classList.add('button-not-ready')
     this.innerText = ready ? 'Click here when you\'re ready' : 'Wait for the admin to start the game...'
     readyButton.dataset.ready = !ready
 }
 
-function startButtonHandler() {
-    if (startButton.dataset.ready) {        
+function startButtonHandler() {    
+    if (this.dataset.ready === 'true') {        
         socket.emit('ready', true)
         socket.emit('start game')    
         console.log('start game')        
@@ -114,11 +115,11 @@ socket.on('change in users', (roomData) => {
     // if user is admin and alone, or admin and everyone is ready, enable the start button
     if ((admin && everyoneReady(roomData.users)) || (admin && roomData.users.length <= 1)) {
         startButton.dataset.ready = true
-        startButton.classList.remove('inactive')
+        startButton.classList.remove('button-not-ready', 'inactive')
         startButton.innerText = 'Start game'
     } else {
         startButton.dataset.ready = false
-        startButton.classList.add('inactive')
+        startButton.classList.add('button-not-ready', 'inactive')
         startButton.innerText = 'Wait for all players to get ready...'
     }
 })
@@ -169,7 +170,7 @@ function updateRoomList(rooms) {
             anyRoomWaiting = true
             let newOption = document.createElement('option')
             const playerText =  room.userTotal === 1 ? 'player' : 'players'
-            const optionText = `${room.roomName} ( ${room.userTotal} ${playerText})`
+            const optionText = `${room.roomName} ( ${room.userTotal} ${playerText} )`
             newOption.value = room.roomName
             newOption.innerText = optionText
             roomSelectElement.appendChild(newOption)

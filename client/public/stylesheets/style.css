@@ -3,6 +3,7 @@
   --c-white: white;
   --c-red-l:  rgb(255, 110, 110);
   --c-red-ll:  rgb(255, 188, 188);
+  --c-red-lll:  rgb(253, 215, 215);
   --c-grey: rgb(163, 163, 163);
   --c-grey-d: rgb(83, 83, 83);
   --c-grey-l: rgb(207, 207, 207);
@@ -12,7 +13,7 @@
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 body {
@@ -20,6 +21,10 @@ body {
   font-family: var(--font-family);
   background: url('../images/background.png');
   background-size: 256px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /* HEADER */
@@ -27,8 +32,7 @@ body {
 header {
   background-color: var(--c-red);
   color: var(--c-white);
-  height: 7vh;
-  min-height: 3rem;
+  height: 6vh;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -51,8 +55,7 @@ header .icon {
 }
 
 main {
-  max-height: calc(100vh -3rem);
-  height: 88vh;
+  height: 94vh;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -71,7 +74,7 @@ section {
 form {
   background-color: var(--c-white);
   padding: 0;
-  border-radius: 3px;
+  border-radius: 10px;
   margin-bottom: 1rem;
   overflow: hidden;
   border: 2px solid var(--c-red);
@@ -92,7 +95,6 @@ legend {
   display: flex;
   justify-content: center;
   font-weight: bold;
-  padding: 0;
   border-bottom: 1px solid red;
   width: 100%;
   box-sizing: border-box;
@@ -170,6 +172,7 @@ input[type='submit'] {
   border: none;
   display: flex;
   justify-content: center;
+  transition: background-color .3s ease;
 }
 
 input[type='submit']:hover {
@@ -188,15 +191,99 @@ select {
 footer {
   display: flex;
   justify-content: center;
-  color: white;
-  background-color: var(--c-red);
+  align-items: center;
   padding: .5rem;
-  height: 5vh;
+  height: 3em;
+  box-sizing: border-box;
+  background-color: var(--c-red-ll);
 }
 
 footer a {
-  color: white;
+  color: var(--c-red-lll);
   font-weight: bold;
   cursor: pointer;
   text-decoration: none;
+  transition: all .5s ease;
+}
+
+footer a:hover {  
+  color: var(--c-white);
+  transform: translateY(-5px);
+}
+
+
+/* WAITING ROOM SECTION */
+#other-players-article {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid var(--c-red);
+  min-width: 15rem;
+}
+
+#other-players-article h3 {
+  color: var(--c-white);
+  background-color: var(--c-red);
+  margin: 0;
+  font-weight: bold;
+  padding: .5rem 1rem;
+  font-size: 1rem;
+}
+
+#other-players-article button {
+  background-color: var(--c-red-l);
+  color: var(--c-white);
+  text-align: center;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  justify-content: center;
+  transition: background-color .3s ease;
+  padding: .5rem;
+  margin: 1rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#other-players-article button:hover {
+  background-color: var(--c-red);
+  color: var(--c-white);
+}
+
+#other-players-article .button-not-ready {
+  background-color: var(--c-white);
+  color: var(--c-red);
+  border: 1px solid var(--c-red);
+}
+
+#other-players-article .button-not-ready:hover {  
+  background-color: var(--c-white);
+  color: var(--c-red);
+}
+
+#other-players-article .inactive {
+  cursor: default;
+}
+
+#user-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+#user-list li {
+  border: 1px solid var(--red);
+  padding: .5rem;
+  color: var(--c-red);
+}
+
+#user-list .user-ready {
+  background-color: var(--c-red-lll);
+}
+
+.buttons-container {
+
+}
+
+.ready-button, .start-button {
+
 }
