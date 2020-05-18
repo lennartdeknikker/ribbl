@@ -144,12 +144,13 @@ socket.on('rounds changed', (currentRound, totalRounds) => {
 })
 
 socket.on('your turn starts now', (words) => {
+    wordPickerArticle.classList.remove('hidden')
     wordButtonsContainer.innerHTML = ''
     for (let word of words) {
         const newButton = document.createElement('button')
         newButton.innerText = word
-        wordButtonsContainer.appendChild(newButton)
         newButton.addEventListener('click', pickWordHandler)
+        wordButtonsContainer.appendChild(newButton)
     }
 })
 

@@ -64,7 +64,7 @@ main {
 section {
   height: 100%;
   overflow-y: auto;
-  padding: 1rem;
+  margin: 1rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -213,7 +213,7 @@ footer a:hover {
 
 
 /* WAITING ROOM SECTION */
-#other-players-article {
+.card {
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
@@ -221,7 +221,7 @@ footer a:hover {
   min-width: 15rem;
 }
 
-#other-players-article h3 {
+.card h3 {
   color: var(--c-white);
   background-color: var(--c-red);
   margin: 0;
@@ -230,7 +230,7 @@ footer a:hover {
   font-size: 1rem;
 }
 
-#other-players-article button {
+.card button {
   background-color: var(--c-red-l);
   color: var(--c-white);
   text-align: center;
@@ -245,23 +245,23 @@ footer a:hover {
   cursor: pointer;
 }
 
-#other-players-article button:hover {
+.card button:hover {
   background-color: var(--c-red);
   color: var(--c-white);
 }
 
-#other-players-article .button-not-ready {
+.card .button-not-ready {
   background-color: var(--c-white);
   color: var(--c-red);
   border: 1px solid var(--c-red);
 }
 
-#other-players-article .button-not-ready:hover {  
+.card .button-not-ready:hover {  
   background-color: var(--c-white);
   color: var(--c-red);
 }
 
-#other-players-article .inactive {
+.card .inactive {
   cursor: default;
 }
 
@@ -271,19 +271,88 @@ footer a:hover {
 }
 
 #user-list li {
-  border: 1px solid var(--red);
+  border-top: 1px solid var(--c-red);
   padding: .5rem;
   color: var(--c-red);
+}
+
+#user-list li:last-of-type {
+  border-bottom: 1px solid var(--c-red);
 }
 
 #user-list .user-ready {
   background-color: var(--c-red-lll);
 }
 
-.buttons-container {
-
+#word-picker-article {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--c-white);
 }
 
-.ready-button, .start-button {
+#word-buttons-container {
+  margin-top: 1rem;
+  display: flex;
+}
 
+#word-buttons-container button, #toggle-scores-button {
+  background-color: var(--c-red-l);
+  color: var(--c-white);
+  text-align: center;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  justify-content: center;
+  transition: background-color .3s ease;
+  padding: .5rem;
+  margin: 1rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#word-buttons-container button:hover, #toggle-scores-button {
+  background-color: var(--c-red);
+  color: var(--c-white);
+}
+
+#game-room-section {
+  background-color: var(--c-white);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid var(--c-red);
+}
+
+#game-section-header {
+  width: 100%;
+}
+
+#scores-article {
+  border-bottom: 1px solid var(--c-red);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#scores-article h3 {
+  margin: .5rem 0 0 0;
+  font-size: 1rem;
+}
+
+#scores-list {
+  margin: .5rem 0 0 0;
+}
+
+#toggle-scores-button {
+  margin: 0 0 0 1rem;
+  height: 2rem;
 }
