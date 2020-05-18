@@ -312,13 +312,25 @@ function draw(newX, newY) {
 console.log(canvas)
 
 canvas.addEventListener('mouseup', () => socket.emit('draw mouseup'))
+canvas.addEventListener('touchend', () => socket.emit('draw mouseup'))
 canvas.addEventListener('mouseout', () => socket.emit('draw mouseout'))
+canvas.addEventListener('touchcancel', () => socket.emit('draw mouseout'))
 canvas.addEventListener('mousedown', (e) => {
     const newX = e.offsetX
     const newY = e.offsetY
     socket.emit('draw mousedown', newX, newY)
 })
+canvas.addEventListener('touchstart', (e) => {
+    const newX = e.offsetX
+    const newY = e.offsetY
+    socket.emit('draw mousedown', newX, newY)
+})
 canvas.addEventListener('mousemove', event => {
+    const newX = event.offsetX
+    const newY = event.offsetY
+    socket.emit('draw mousemove', newX, newY)
+})
+canvas.addEventListener('touchmove', event => {
     const newX = event.offsetX
     const newY = event.offsetY
     socket.emit('draw mousemove', newX, newY)
