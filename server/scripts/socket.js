@@ -119,14 +119,14 @@ function socket(io) {
             io.to(room.roomName).emit('drawing mouseout')     
         })
 
-        socket.on('draw mousedown', (newX, newY) => {
+        socket.on('draw mousedown', (positionData) => {
             const room = Utilities.getRoomByUserId(socket.id, availableRooms)
-            io.to(room.roomName).emit('drawing mousedown', newX, newY)     
+            io.to(room.roomName).emit('drawing mousedown', positionData)     
         })
 
-        socket.on('draw mousemove', (newX, newY) => {
+        socket.on('draw mousemove', (positionData) => {
             const room = Utilities.getRoomByUserId(socket.id, availableRooms)
-            io.to(room.roomName).emit('drawing mousemove', newX, newY)     
+            io.to(room.roomName).emit('drawing mousemove', positionData)     
         })
 
         socket.on('word picked', word => {

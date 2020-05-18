@@ -356,3 +356,22 @@ footer a:hover {
   margin: 0 0 0 1rem;
   height: 2rem;
 }
+
+.canvas-your-turn {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  z-index: 2;
+}
+
+.time-your-turn {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  color: var(--c-red);
+  z-index: 3;
+  font-size: 1rem;
+}

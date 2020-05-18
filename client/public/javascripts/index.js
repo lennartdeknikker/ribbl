@@ -15,6 +15,7 @@ const roundsText = document.getElementById('rounds')
 const wordPickerArticle = document.getElementById('word-picker-article')
 const wordButtonsContainer = document.getElementById('word-buttons-container')
 const drawTimeTextElement = document.getElementById('draw-time')
+const canvas = document.getElementById('drawing-board')
 
 // EVENT LISTENERS
 readyButton.addEventListener('click', readyButtonHandler)
@@ -73,6 +74,8 @@ function handleForm() {
 function pickWordHandler() {
     socket.emit('word picked', this.innerText)
     wordPickerArticle.classList.add('hidden')
+    canvas.classList.add('canvas-your-turn')
+    drawTimeTextElement.classList.add('time-your-turn')
 }
 
 //SOCKET EVENTS
@@ -282,7 +285,6 @@ function validate(form) {
 }
 
 // DRAWING
-const canvas = document.getElementById('drawing-board')
 const ctx = canvas.getContext('2d')
 
 canvas.width = window.innerWidth
@@ -300,8 +302,13 @@ let drawVars = {
     lastY: 0
 }
 
-function draw(newX, newY) {    
+function draw(positionData) {
     if (!drawVars.isDrawing) return
+
+    const factor = canvas.width / positionData.canvasWidth    
+    const newX =  positionData.newX * factor
+    const newY = positionData.newY * factor
+
     ctx.beginPath()
     ctx.moveTo(drawVars.lastX, drawVars.lastY)
     ctx.lineTo(newX, newY)
@@ -321,41 +328,69 @@ canvas.addEventListener('touchcancel', (e) => {
     console.log('touchcancel', e)
     socket.emit('draw mouseout')
 })
-canvas.addEventListener('mousedown', (e) => {
-    const newX = e.offsetX
-    const newY = e.offsetY
-    socket.emit('draw mousedown', newX, newY)
+canvas.addEventListener('mousedown', (e) => {    
+    const positionData = {
+        canvasWidth: canvas.width,
+        canvasHeight: canvas.height,
+        newX: e.offsetX,
+        newY: e.offsetY
+    }
+    
+    socket.emit('draw mousedown', positionData)
 })
 canvas.addEventListener('touchstart', (e) => {
     console.log('touchstart', e)
 
     const rect = e.target.getBoundingClientRect()
-    const newX = e.targetTouches[0].pageX - rect.left
-    const newY = e.targetTouches[0].pageY - rect.top
+    console.log(rect)
 
-    socket.emit('draw mousedown', newX, newY)
+    const positionData = {
+        canvasWidth: rect.width,
+        canvasHeight: rect.height,
+        newX: e.targetTouches[0].pageX,
+        newY: e.targetTouches[0].pageY
+    }
+    
+    socket.emit('draw mousedown', positionData)
 })
-canvas.addEventListener('mousemove', event => {
-    const newX = event.offsetX
-    const newY = event.offsetY
-    socket.emit('draw mousemove', newX, newY)
+
+canvas.addEventListener('mousemove', e => {
+    console.log('mousemove', e)
+
+    const positionData = {
+        canvasWidth: canvas.width,
+        canvasHeight: canvas.height,
+        newX: e.offsetX,
+        newY: e.offsetY
+    }
+    if (drawVars.isDrawing) socket.emit('draw mousemove', positionData)
 })
+
 canvas.addEventListener('touchmove', e => {
     console.log('touchmove', e)
 
-    const rect = e.target.getBoundingClientRect()
-    const newX = e.targetTouches[0].pageX - rect.left
-    const newY = e.targetTouches[0].pageY - rect.top
+    const rect = e.target.getBoundingClientRect()    
+    const positionData = {
+        canvasWidth: rect.width,
+        canvasHeight: rect.height,
+        newX: e.targetTouches[0].pageX,
+        newY: e.targetTouches[0].pageY
+    }
     
-    socket.emit('draw mousemove', newX, newY)
+    socket.emit('draw mousemove', positionData)
 })
 
 socket.on('drawing mouseup', () => drawVars.isDrawing = false)
 socket.on('drawing mouseout', () => drawVars.isDrawing = false)
-socket.on('drawing mousedown', (newX, newY) => {
+socket.on('drawing mousedown', (positionData) => {
+    
+    const factor = canvas.width / positionData.canvasWidth    
+    const newX =  positionData.newX * factor
+    const newY = positionData.newY * factor
+
     drawVars.isDrawing = true;
     [drawVars.lastX, drawVars.lastY] = [newX, newY]
 })
-socket.on('drawing mousemove', (newX, newY) => {
-    draw(newX, newY)
+socket.on('drawing mousemove', (positionData) => {
+    draw(positionData)
 })
