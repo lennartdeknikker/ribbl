@@ -255,6 +255,10 @@ function everyoneReady(users) {
     return everyoneReady
 }
 
+function isPortrait(width, height) {
+    return width - height < 0
+}
+
 
 // FORM VALIDATION
 const forms = document.querySelectorAll('form')
@@ -305,7 +309,29 @@ let drawVars = {
 function draw(positionData) {
     if (!drawVars.isDrawing) return
 
-    const factor = canvas.width / positionData.canvasWidth    
+    // const senderIsPortrait = isPortrait(positionData.canvasWidth, positionData.canvasHeight)
+    // const receiverIsPortrait = isPortrait(canvas.width, canvas.height)
+
+    const senderWidth = positionData.canvasWidth
+    const senderHeight = positionData.canvasHeight
+    const receiverWidth = canvas.width
+    const receiverHeight = canvas.height
+
+    const factorA = receiverWidth / senderWidth
+    const factorB = receiverHeight / senderHeight
+    const factor =  factorA < factorB ? factor = factorA : factor = factorB
+    console.log(factor);
+    
+
+    // if sender is landscape and receiver is portrait
+    // let factor = 0
+    // if (!senderIsPortrait && receiverIsPortrait) {
+    //     factor = canvas.width / positionData.canvasWidth
+    // } else if (senderIsPortrait && !receiverIsPortrait) {
+    //     factor = canvas.height / positionData.canvasHeight
+    // } else if (!senderIsPortrait && !receiverIsPortrait) {
+    //     if 
+    // }
     const newX =  positionData.newX * factor
     const newY = positionData.newY * factor
 
