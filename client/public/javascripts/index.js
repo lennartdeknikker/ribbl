@@ -309,18 +309,21 @@ let drawVars = {
 function draw(positionData) {
     if (!drawVars.isDrawing) return
 
-    // const senderIsPortrait = isPortrait(positionData.canvasWidth, positionData.canvasHeight)
-    // const receiverIsPortrait = isPortrait(canvas.width, canvas.height)
+    const senderIsPortrait = isPortrait(positionData.canvasWidth, positionData.canvasHeight)
+    const receiverIsPortrait = isPortrait(canvas.width, canvas.height)
 
     const senderWidth = positionData.canvasWidth
     const senderHeight = positionData.canvasHeight
     const receiverWidth = canvas.width
     const receiverHeight = canvas.height
 
-    const factorA = receiverWidth / senderWidth
-    const factorB = receiverHeight / senderHeight
-    const factor =  factorA < factorB ? factorA : factorB
-    console.log(factor)
+    const factorA = receiverWidth < senderWidth ? receiverWidth / senderWidth : senderWidth / receiverWidth
+    const factorB = receiverHeight < senderHeight ? receiverHeight / senderHeight : senderHeight / receiverHeight
+    let factor =  factorA < factorB ? factorA : factorB
+    if (factorA < 1 && factorB < 1 && senderIsPortrait && !receiverIsPortrait) factor = factorA > factorB ? factorA : factorB
+
+    console.log(senderWidth, senderHeight, receiverWidth, receiverHeight)    
+    console.log(factorA, factorB, factor)
     
 
     // if sender is landscape and receiver is portrait
