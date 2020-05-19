@@ -319,8 +319,8 @@ function draw(positionData) {
 
     const factorA = receiverWidth / senderWidth
     const factorB = receiverHeight / senderHeight
-    const factor =  factorA < factorB ? factor = factorA : factor = factorB
-    console.log(factor);
+    const factor =  factorA < factorB ? factorA : factorB
+    console.log(factor)
     
 
     // if sender is landscape and receiver is portrait
