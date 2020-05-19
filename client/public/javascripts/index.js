@@ -147,6 +147,7 @@ socket.on('rounds changed', (currentRound, totalRounds) => {
 })
 
 socket.on('your turn starts now', (words) => {
+    canvas.dataset.draw = true
     wordPickerArticle.classList.remove('hidden')
     wordButtonsContainer.innerHTML = ''
     for (let word of words) {
@@ -255,10 +256,10 @@ function everyoneReady(users) {
     return everyoneReady
 }
 
-function isPortrait(width, height) {
-    return width - height < 0
+function allowedToDraw() {
+    console.log(canvas.dataset.draw)    
+    return canvas.dataset.draw
 }
-
 
 // FORM VALIDATION
 const forms = document.querySelectorAll('form')
@@ -309,9 +310,6 @@ let drawVars = {
 function draw(positionData) {
     if (!drawVars.isDrawing) return
 
-    const senderIsPortrait = isPortrait(positionData.canvasWidth, positionData.canvasHeight)
-    const receiverIsPortrait = isPortrait(canvas.width, canvas.height)
-
     const senderWidth = positionData.canvasWidth
     const senderHeight = positionData.canvasHeight
     const receiverWidth = canvas.width
@@ -320,21 +318,7 @@ function draw(positionData) {
     const factorA = receiverWidth < senderWidth ? receiverWidth / senderWidth : senderWidth / receiverWidth
     const factorB = receiverHeight < senderHeight ? receiverHeight / senderHeight : senderHeight / receiverHeight
     let factor =  factorA < factorB ? factorA : factorB
-    if (factorA < 1 && factorB < 1 && senderIsPortrait && !receiverIsPortrait) factor = factorA > factorB ? factorA : factorB
-
-    console.log(senderWidth, senderHeight, receiverWidth, receiverHeight)    
-    console.log(factorA, factorB, factor)
     
-
-    // if sender is landscape and receiver is portrait
-    // let factor = 0
-    // if (!senderIsPortrait && receiverIsPortrait) {
-    //     factor = canvas.width / positionData.canvasWidth
-    // } else if (senderIsPortrait && !receiverIsPortrait) {
-    //     factor = canvas.height / positionData.canvasHeight
-    // } else if (!senderIsPortrait && !receiverIsPortrait) {
-    //     if 
-    // }
     const newX =  positionData.newX * factor
     const newY = positionData.newY * factor
 
@@ -347,17 +331,19 @@ function draw(positionData) {
 
 console.log(canvas)
 
-canvas.addEventListener('mouseup', () => socket.emit('draw mouseup'))
+canvas.addEventListener('mouseup', () => {
+    if (allowedToDraw()) socket.emit('draw mouseup')
+})
 canvas.addEventListener('touchend', (e) => {
-    console.log('touchend', e)
-    socket.emit('draw mouseup')
+    if (allowedToDraw()) socket.emit('draw mouseup')
 })
 canvas.addEventListener('mouseout', () => socket.emit('draw mouseout'))
-canvas.addEventListener('touchcancel', (e) => {    
-    console.log('touchcancel', e)
-    socket.emit('draw mouseout')
+canvas.addEventListener('touchcancel', () => {    
+    if (allowedToDraw()) socket.emit('draw mouseout')
 })
-canvas.addEventListener('mousedown', (e) => {    
+canvas.addEventListener('mousedown', (e) => {
+    if (!allowedToDraw()) return
+
     const positionData = {
         canvasWidth: canvas.width,
         canvasHeight: canvas.height,
@@ -367,8 +353,8 @@ canvas.addEventListener('mousedown', (e) => {
     
     socket.emit('draw mousedown', positionData)
 })
-canvas.addEventListener('touchstart', (e) => {
-    console.log('touchstart', e)
+canvas.addEventListener('touchstart', (e) => {    
+    if (!allowedToDraw()) return
 
     const rect = e.target.getBoundingClientRect()
     console.log(rect)
@@ -383,8 +369,8 @@ canvas.addEventListener('touchstart', (e) => {
     socket.emit('draw mousedown', positionData)
 })
 
-canvas.addEventListener('mousemove', e => {
-    console.log('mousemove', e)
+canvas.addEventListener('mousemove', e => {    
+    if (!allowedToDraw()) return
 
     const positionData = {
         canvasWidth: canvas.width,
@@ -396,7 +382,7 @@ canvas.addEventListener('mousemove', e => {
 })
 
 canvas.addEventListener('touchmove', e => {
-    console.log('touchmove', e)
+    if (!allowedToDraw()) return
 
     const rect = e.target.getBoundingClientRect()    
     const positionData = {
@@ -412,8 +398,16 @@ canvas.addEventListener('touchmove', e => {
 socket.on('drawing mouseup', () => drawVars.isDrawing = false)
 socket.on('drawing mouseout', () => drawVars.isDrawing = false)
 socket.on('drawing mousedown', (positionData) => {
+
+    const senderWidth = positionData.canvasWidth
+    const senderHeight = positionData.canvasHeight
+    const receiverWidth = canvas.width
+    const receiverHeight = canvas.height
+
+    const factorA = receiverWidth < senderWidth ? receiverWidth / senderWidth : senderWidth / receiverWidth
+    const factorB = receiverHeight < senderHeight ? receiverHeight / senderHeight : senderHeight / receiverHeight
+    let factor =  factorA < factorB ? factorA : factorB
     
-    const factor = canvas.width / positionData.canvasWidth    
     const newX =  positionData.newX * factor
     const newY = positionData.newY * factor
 
